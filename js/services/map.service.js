@@ -32,14 +32,18 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
                     position: mapsMouseEvent.latLng,
                   });
                   infoWindow.setContent(
-                    JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2)
+                    JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2) + "\n<form onsubmit=\"onPickPlace(event,this)\"><input type='text' placeholder=\"Enter location name\"><button>save</button></form>"
+                    
                   );
                   infoWindow.open(gMap);
+                  setMarker(mapsMouseEvent.latLng)
             })
         })
 }
 
-
+function setMarker(latLng) {
+    console.log(latLng.lat())
+}
 
 
 function addMarker(loc) {

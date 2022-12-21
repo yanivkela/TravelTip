@@ -7,6 +7,7 @@ window.onPanTo = onPanTo
 window.onGetLocs = onGetLocs
 window.onGetUserPos = onGetUserPos
 window.onGoToMyPlace = onGoToMyPlace
+window.onPickPlace = onPickPlace
 
 function onInit() {
     mapService.initMap()
@@ -55,4 +56,10 @@ function onGetUserPos() {
 function onPanTo() {
     console.log('Panning the Map')
     mapService.panTo(35.6895, 139.6917)
+}
+
+function onPickPlace(ev,el) {
+    ev.preventDefault()
+    console.log(ev)
+    console.dir(el)
 }
