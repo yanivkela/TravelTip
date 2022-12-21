@@ -6,6 +6,7 @@ window.onAddMarker = onAddMarker
 window.onPanTo = onPanTo
 window.onGetLocs = onGetLocs
 window.onGetUserPos = onGetUserPos
+window.onGoToMyPlace = onGoToMyPlace
 
 function onInit() {
     mapService.initMap()
@@ -34,6 +35,10 @@ function onGetLocs() {
             console.log('Locations:', locs)
             document.querySelector('.locs').innerText = JSON.stringify(locs, null, 2)
         })
+}
+
+function onGoToMyPlace() {
+    getPosition().then(pos => mapService.panTo(pos.coords.latitude, pos.coords.longitude))
 }
 
 function onGetUserPos() {
