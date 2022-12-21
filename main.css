@@ -1,5 +1,10 @@
 *{
     box-sizing: border-box;
+    color: black;
+}
+
+body{
+    background-color: #3C2A21;
 }
 
 .main-container{
@@ -20,5 +25,18 @@
 .locations{
     display: flex;
     flex-direction: column;
+}
+
+table{
+    background-color: #cccccc;
+    border: 2px black solid;
+    border-spacing: 10px;
+    word-spacing: 10px;
+}
+
+td {
+    border: 3px black solid;
+    width: 140px;
+    text-align: center;    
 }
 
