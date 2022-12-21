@@ -5,7 +5,8 @@ export const placeService = {
     save,
     get,
     remove,
-    getGPlaces
+    getGPlaces,
+    getPlaces
 }
 
 const PLACE_KEY = 'placeDB'
@@ -29,6 +30,10 @@ function remove(place){
 
 function save(place){
      return storageService.post(PLACE_KEY, place)
+}
+
+function getPlaces() {
+    return storageService.query(PLACE_KEY,0)
 }
 
 function getGPlaces(){

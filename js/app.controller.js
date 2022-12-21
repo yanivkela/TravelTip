@@ -2,6 +2,7 @@ import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
 import { placeService } from './services/place.service.js'
 import { utils } from './services/utils.service.js'
+import { weatherService } from './services/weather.service.js'
 
 window.onload = onInit
 window.onAddMarker = onAddMarker
@@ -11,6 +12,8 @@ window.onGetUserPos = onGetUserPos
 window.onGoToMyPlace = onGoToMyPlace
 window.onPickPlace = onPickPlace
 window.onEnterLocation = onEnterLocation
+window.onGoTo = onGoTo
+window.onDelete = onDelete
 
 function onInit() {
   mapService
@@ -23,6 +26,10 @@ function onInit() {
       // debugger
     })
     .catch(() => console.log('Error: cannot init map'))
+    placeService.getPlaces().then(places => {
+        console.log(places)
+        renderPlaces(places)
+    })
 }
 
 // This function provides a Promise API to the callback-based-api of getCurrentPosition
@@ -76,15 +83,24 @@ function onPanTo() {
 
 function onPickPlace(ev, lat, lng) {
   ev.preventDefault()
-  const place = {
-    name: document.querySelector('.place-name').value,
-    lat,
-    lng,
-    id: utils.makeId(3),
-    createdAt: Date.now(),
-  }
-  document.querySelector('.place-name').value = ''
-  console.log(place)
+  var temp
+  var weather
+  console.log(weatherService.getWeather(lat, lng).then((res) => res))
+  weatherService.getWeather(lat, lng).then((res) => {
+    const place = {
+      name: document.querySelector('.place-name').value,
+      lat,
+      lng,
+      id: utils.makeId(3),
+      createdAt: Date.now(),
+      temp: res.temp,
+      weather: res.weather,
+    }
+    document.querySelector('.place-name').value = ''
+    placeService.save(place).then(() => {
+        placeService.getPlaces().then(places => renderPlaces(places))
+    })
+  })
 }
 
 function onEnterLocation() {
@@ -93,23 +109,24 @@ function onEnterLocation() {
     .then((res) => {
       mapService.panTo(res.lat, res.lng)
       mapService.addMarker({ lat: res.lat, lng: res.lng })
-      const place = {
-        name: document.querySelector('.enter-location').value,
-        lat: res.lat,
-        lng: res.lng,
-        id: utils.makeId(3),
-        createdAt: Date.now(),
-      }
-      placeService.addPlace(place)
-      setQueryStringParams(res.lat, res.lng)
+      weatherService.getWeather(res.lat, res.lng).then((result) => {
+        const place = {
+          name: document.querySelector('.enter-location').value,
+          lat: res.lat,
+          lng: res.lng,
+          id: utils.makeId(3),
+          createdAt: Date.now(),
+          temp: result.temp,
+          weather: result.weather,
+        }
+        placeService.save(place).then(() => {
+            placeService.getPlaces().then(places => renderPlaces(places))
+        })
+        setQueryStringParams(res.lat, res.lng)
+      })
     })
 }
 
-renderPlaces()
-function renderPlaces() {
-  const places = getGPlaces()
-  console.log(places)
-}
 
 function setQueryStringParams(lat, lng) {
   const queryStringParams = `?lat=${lat}&lng=${lng}`
@@ -122,15 +139,31 @@ function setQueryStringParams(lat, lng) {
   window.history.pushState({ path: newUrl }, '', newUrl)
 }
 
-// function setLocationByParams() {
-//   const queryStringParams = new URLSearchParams(window.location.search)
-//   const coords = {
-//     lat: +queryStringParams.get('lat'),
-//     lng: +queryStringParams.get('lng'),
-//   }
-//   console.log(coords.lat, coords.lng)
-//   setTimeout(() => {
-//       mapService.panTo(coords.lat, coords.lng)
-//       mapService.addMarker({ lat: coords.lat, lng: coords.lng })
-//   },3000)
-// }
+function renderPlaces(places) {
+  const strHTMLs = places.map((place) => {
+    return `
+        <tr>
+        <td>${place.name}</td>
+        <td>${place.lat}</td>
+        <td>${place.lng}</td>
+        <td>${place.createdAt}</td>
+        <td>${place.weather}, ${place.temp}°C</td>
+        <td><button onclick="onGoTo(${place.lat},${place.lng})">Go</button></td>
+        <td><button onclick="onDelete('${place.id}')">Delete</button></td>
+        </tr>
+        `
+  })
+  document.querySelector('.locations-table tbody').innerHTML = strHTMLs.join('')
+}
+
+function onGoTo(lat, lng) {
+  mapService.panTo(lat, lng)
+  mapService.addMarker({ lat, lng })
+  setQueryStringParams(lat, lng)
+}
+
+function onDelete(id) {
+    placeService.remove(id).then(() => {
+        placeService.getPlaces().then(places => renderPlaces(places))
+    })
+}

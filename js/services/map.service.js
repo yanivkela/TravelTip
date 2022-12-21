@@ -21,8 +21,8 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
     console.log('Map!', gMap)
 
     gMap.addListener('click', (mapsMouseEvent) => {
-      infoWindow.close()
-      infoWindow = new google.maps.InfoWindow({
+        if (infoWindow) console.log('infoWindow available')
+      let infoWindow = new google.maps.InfoWindow({
         position: mapsMouseEvent.latLng,
       })
       infoWindow.setContent(
@@ -34,6 +34,7 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
     gMap.addListener('tilesloaded',setLocationByParams)
   })
 }
+
 
 function addMarker(loc) {
   var marker = new google.maps.Marker({
@@ -52,6 +53,7 @@ function panTo(lat, lng) {
 function findLatLng(address) {
   const urlAddress = address.split(' ').join('+')
   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${urlAddress}&key=${GEOCODE_API_KEY}`
+  console.log(axios.get(url).then((res) => res))
   return axios.get(url).then((res) => res.data.results[0].geometry.location)
 }
 
