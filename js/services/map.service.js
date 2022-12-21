@@ -21,7 +21,6 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
     console.log('Map!', gMap)
 
     gMap.addListener('click', (mapsMouseEvent) => {
-        if (infoWindow) console.log('infoWindow available')
       let infoWindow = new google.maps.InfoWindow({
         position: mapsMouseEvent.latLng,
       })
