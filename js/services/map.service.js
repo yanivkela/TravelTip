@@ -19,8 +19,28 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
                 zoom: 15
             })
             console.log('Map!', gMap)
+            let infoWindow = new google.maps.InfoWindow({
+                content: "Click the map to get Lat/Lng!",
+                position: { lat, lng },
+              });
+            
+              infoWindow.open(gMap);
+            
+            gMap.addListener('click', (mapsMouseEvent) => {
+                infoWindow.close();
+                infoWindow = new google.maps.InfoWindow({
+                    position: mapsMouseEvent.latLng,
+                  });
+                  infoWindow.setContent(
+                    JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2)
+                  );
+                  infoWindow.open(gMap);
+            })
         })
 }
+
+
+
 
 function addMarker(loc) {
     var marker = new google.maps.Marker({
