@@ -1,0 +1,24 @@
+*{
+    box-sizing: border-box;
+}
+
+.main-container{
+    max-width: 1060px;
+    margin: auto;
+}
+
+.buttons{
+    display: flex;
+}
+
+.map-info{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.locations{
+    display: flex;
+    flex-direction: column;
+}
+
