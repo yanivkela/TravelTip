@@ -1,5 +1,6 @@
 import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
+import { placeService } from './services/place.service.js'
 import { utils } from './services/utils.service.js'
 
 window.onload = onInit
@@ -16,12 +17,12 @@ function onInit() {
     .initMap()
     .then(() => {
       console.log('Map is ready')
-    //   mapService.addMarker({lat: coords.lat, lng: coords.lng})
-    // setLocationByParams()
-    // setTimout(setLocationByParams,3000)
-    // debugger
-})
-.catch(() => console.log('Error: cannot init map'))
+      //   mapService.addMarker({lat: coords.lat, lng: coords.lng})
+      // setLocationByParams()
+      // setTimout(setLocationByParams,3000)
+      // debugger
+    })
+    .catch(() => console.log('Error: cannot init map'))
 }
 
 // This function provides a Promise API to the callback-based-api of getCurrentPosition
@@ -99,9 +100,15 @@ function onEnterLocation() {
         id: utils.makeId(3),
         createdAt: Date.now(),
       }
-      console.log(place)
+      placeService.addPlace(place)
       setQueryStringParams(res.lat, res.lng)
     })
+}
+
+renderPlaces()
+function renderPlaces() {
+  const places = getGPlaces()
+  console.log(places)
 }
 
 function setQueryStringParams(lat, lng) {
