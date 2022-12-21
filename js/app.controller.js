@@ -1,5 +1,6 @@
 import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
+import { utils } from './services/utils.service.js'
 
 window.onload = onInit
 window.onAddMarker = onAddMarker
@@ -58,8 +59,15 @@ function onPanTo() {
     mapService.panTo(35.6895, 139.6917)
 }
 
-function onPickPlace(ev,el) {
+function onPickPlace(ev,lat,lng) {
     ev.preventDefault()
-    console.log(ev)
-    console.dir(el)
+    const place = {
+        name: document.querySelector('.place-name').value,
+        lat,
+        lng,
+        id: utils.makeId(3),
+        createdAt: Date.now(),
+    }
+    document.querySelector('.place-name').value = ''
+    console.log(place)
 }
