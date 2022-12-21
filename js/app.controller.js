@@ -1,6 +1,8 @@
 import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
+import { placeService } from './services/place.service.js'
 import { utils } from './services/utils.service.js'
+
 
 window.onload = onInit
 window.onAddMarker = onAddMarker
@@ -9,6 +11,7 @@ window.onGetLocs = onGetLocs
 window.onGetUserPos = onGetUserPos
 window.onGoToMyPlace = onGoToMyPlace
 window.onPickPlace = onPickPlace
+
 
 function onInit() {
     mapService.initMap()
@@ -69,5 +72,11 @@ function onPickPlace(ev,lat,lng) {
         createdAt: Date.now(),
     }
     document.querySelector('.place-name').value = ''
-    console.log(place)
+    placeService.addPlace(place)
+}
+
+renderPlaces()
+function renderPlaces(){
+    const places = getGPlaces()
+    console.log(places);
 }
